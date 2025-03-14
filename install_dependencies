@@ -75,18 +75,59 @@ function print_result(){
 ###################################
 # install python-pip django i2c-tools python-smbus python-opencv runtime #
 ###################################
-echo -e "\nInstalling django \n"
-if sudo pip3 install django==2.0 ; then
-    echo -e "    Successfully installed django runtime \n"
-    is_installed_django=true
+echo -e "\nInstalling pip3 if not already installed\n"
+if sudo apt-get install python3-pip -y; then
+    echo -e "    Successfully installed pip3\n"
 else
-    echo -e "    Failed to installed django."
+    echo -e "    Failed to install pip3"
     echo -e "    Do you want to skip this? \c"
     if_continue
     if [ $? = 1 ] ; then
-        echo -e "    Skipped django installation."
+        echo -e "    Skipped pip3 installation."
     else
         end
+    fi
+fi
+
+echo -e "\nInstalling python3-django\n"
+if sudo apt-get install python3-django -y; then
+    echo -e "    Successfully installed django runtime \n"
+    is_installed_django=true
+else
+    echo -e "    Failed to install django via apt."
+    echo -e "    Attempting to set up a virtual environment...\n"
+    
+    # Install python3-venv
+    if sudo apt-get install python3-venv -y; then
+        # Create a venv in the project directory
+        python3 -m venv .venv
+        # Activate the venv and install django
+        if .venv/bin/pip3 install "django>=3.2,<4.0"; then
+            echo -e "    Successfully installed django in virtual environment\n"
+            is_installed_django=true
+            # Update the start script to use the venv python
+            if [ -f "remote_control/start" ]; then
+                sed -i '1s|^.*$|#!'"$(pwd)"'/.venv/bin/python3|' remote_control/start
+            fi
+        else
+            echo -e "    Failed to install django in virtual environment."
+            echo -e "    Do you want to skip this? \c"
+            if_continue
+            if [ $? = 1 ] ; then
+                echo -e "    Skipped django installation."
+            else
+                end
+            fi
+        fi
+    else
+        echo -e "    Failed to install python3-venv."
+        echo -e "    Do you want to skip this? \c"
+        if_continue
+        if [ $? = 1 ] ; then
+            echo -e "    Skipped django installation."
+        else
+            end
+        fi
     fi
 fi
 
@@ -144,7 +185,6 @@ cd ../
 git clone --recursive https://github.com/sunfounder/SunFounder_PiCar.git
 cd SunFounder_PiCar
 echo -e "    Installing PiCar module \n"
-sudo python setup.py install
 sudo python3 setup.py install
 cd $repo_dir
 echo -e "complete\n"

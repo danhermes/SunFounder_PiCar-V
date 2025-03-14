@@ -52,3 +52,14 @@ website:
 
 E-mail:
     service@sunfounder.com
+
+## Setup
+1. Clone both repositories side by side:
+   ```bash
+   git clone https://github.com/sunfounder/SunFounder_PiCar-V.git
+   git clone https://github.com/sunfounder/SunFounder_PiCar.git
+   ```
+2. Run setup script:
+   ```bash
+   ./setup.sh
+   ```

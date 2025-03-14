@@ -11,6 +11,16 @@
 **********************************************************************
 '''
 
+# Add debug print to see search path
+import sys
+print("Python path:", sys.path)
+print("Attempting to import picar...")
+
+try:
+	import smbus
+except ImportError:
+	import smbus2 as smbus
+
 from picar.SunFounder_PCA9685 import Servo
 import time
 from picar import filedb

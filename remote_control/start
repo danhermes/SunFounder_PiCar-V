@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #**********************************************************************
 #* Filename    : start
 #* Description : a simple bash script to run the django server
@@ -10,11 +10,19 @@
 #*               Cavon    2016-10-19    Add install config
 #**********************************************************************
 
+# Set absolute path to SunFounder_PiCar
+PARENT_DIR="$(cd "$(dirname "$(pwd)")"; pwd)"
+export PYTHONPATH="${PARENT_DIR}/../SunFounder_PiCar"  # Remove the colon and old path
+
+# Print for debugging
+echo "PYTHONPATH: $PYTHONPATH"
+echo "Looking in: $PARENT_DIR/SunFounder_PiCar/picar"
+
 if [ "$1" = "" ]
 then
 	# Run server listen to any IP address and port 8000
 	echo "Server running"
-	python3 manage.py runserver 0.0.0.0:8000
+	python3 manage.py runserver 192.168.1.109:8000
 elif [ "$1" = "install" ]
 then
 	echo 'Running servo installation'

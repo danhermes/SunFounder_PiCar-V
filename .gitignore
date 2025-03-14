@@ -5,3 +5,5 @@
 *.ai
 *.indd
 docs/build/*
+# Add to .gitignore
+remote_control/remote_control/picar/
